@@ -1,8 +1,10 @@
 type Value = undefined | string | number | any[];
-type Validation = (v?: string | number | []) => undefined | string;
+type Validation = (v: Value) => undefined | string;
 
-class Validator {
-  public validate(value): undefined | string {
+// Product class
+// validate depend on initialized validations chain
+export class Validator {
+  public validate(value: Value): undefined | string {
     for (const validator of this.chain) {
       const error = validator(value);
       if (error !== undefined) {
@@ -14,7 +16,9 @@ class Validator {
   public chain: Validation[] = [];
 }
 
-class BoiBuilder {
+// Builder class
+// construct and get product class 
+export class Boi {
   private validator: Validator;
 
   constructor() {
@@ -26,52 +30,56 @@ class BoiBuilder {
     return this;
   }
 
+  public getResult() {
+    return this.validator;
+  }
+
   required() {
     return this.add(
-      value => value !== undefined ? undefined : ""
+      value => value !== undefined && value !== "" ? undefined : "field is required"
     );
   }
   string() {
     return this.add(
-      value => typeof value === "string" ? undefined : "Must be a string"
+      value => typeof value === "string" ? undefined : "must be a string"
     );
   }
   number() {
     return this.add(
-      value => typeof value === "number" ? undefined : "Must be a number"
+      value => typeof value === "number" ? undefined : "must be a number"
     );
   }
   email() {
     const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/igm;
     return this.add(
-      (value: string) => regex.test(value) ? undefined : "Email address invalid"
+      value => regex.test(value as string) ? undefined : "email address invalid"
     );
   }
   max(num: number) {
     return this.add(
       value => typeof value === "number" ? 
         value <= num ? undefined : `Max value is ${num}`
-        : value.length <= num ? undefined : `Max length is ${num}`
+        : value && value.length <= num ? undefined : `max length is ${num}`
     );
   }
   min(num: number) {
     return this.add(
       value => typeof value === "number" ? 
         value >= num ? undefined : `Min value is ${num}`
-        : value.length >= num ? undefined : `Min length is ${num}`
+        : value && value.length >= num ? undefined : `min length is ${num}`
     );
   }
   idiot() {
     const idiotKeys = ["admin", "password", "qwerty", "12345", "name"]
     return this.add(
-      (value: string) => !idiotKeys.includes(value) ? undefined : "Not safe value"
+      value => !idiotKeys.includes(value as string) ? undefined : "not safe value"
     );
   }
   specialKeys() {
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]/igm;
     return this.add(
-      (value: string) => regex.test(value) ? undefined
-        : "At least one uppercase, lowercase letter and one number"
+      value => regex.test(value as string) ? undefined
+        : "at least one uppercase, lowercase letter and one number"
     );
   }
 

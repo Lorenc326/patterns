@@ -1,8 +1,9 @@
 import React from 'react';
+import { Form } from './builder/Form';
 
 function App() {
   return (
-    <div />
+    <Form />
   );
 }
 
