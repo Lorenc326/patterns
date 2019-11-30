@@ -1,38 +1,10 @@
 import React from 'react';
 import { Formik, Form as LibraryForm, Field, FieldProps } from 'formik';
-import { Boi, Validator } from './Boi';
 
-// Director class
-// completes builder steps to get concrete products
-class FormValidations {
-  // construct methods:
-  name(builder: Boi) {
-    builder.required().string().max(15).min(3).idiot();
-  }
-  email(builder: Boi) {
-    builder.required().string().email();
-  }
-  bio(builder: Boi) {
-    builder.string().max(250);
-  }
-  age(builder: Boi) {
-    builder.number().min(18);
-  }
-}
+import { FormValidations } from './director';
+import { ValidationsFactory } from './factory';
 
-// ha-ha! Factory class
-class ValidationsFactory {
-  createValidation(method: keyof FormValidations): Validator {
-    const director = new FormValidations();
-    if (director[method]) {
-      const builder = new Boi();
-      director[method](builder);
-      return builder.getResult();
-    }
-    // empty validator
-    return new Validator();
-  }
-}
+const fields: Array<keyof FormValidations> = ["name", "email", "bio", "age"];
 
 const Input: React.FC<FieldProps<any> & { label: string, type: string }> =
   ({ field, form: { errors, touched, }, label, type }) => {
@@ -50,12 +22,11 @@ const Input: React.FC<FieldProps<any> & { label: string, type: string }> =
     )
   };
 
-const fields: Array<keyof FormValidations> = ["name", "email", "bio", "age"];
-
 export const Form: React.FC = () => {
   const [name, email, bio, age] = React.useMemo(() => {
     const factory = new ValidationsFactory();
-    return fields.map((f => factory.createValidation(f)));
+    const director = new FormValidations();
+    return fields.map((field => factory.createValidation(field, director)));
   }, []);
 
   return (
