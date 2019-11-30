@@ -10,7 +10,7 @@ const getRandomPermissions = () => new Array(randomNum(0, 4))
   .fill(null)
   .map((_, i) => Permissions[i] as unknown as Permissions);
 
-const mocks = new Array(50000)
+const mocks = new Array(10000)
   .fill(null)
   .map(() => ({
     id: v4(),

@@ -1,7 +1,9 @@
+import Immutable from "immutable";
+
 import { User, FlyweightState } from "./model";
 
 // so idea is - except of having 1k+ instances of objects
-// with weight common field, we can create 4-5 instances of those field
+// with weight common field, we can create 4-5 instances of this field
 // and set it to proto of objects, accordingly to field value
 
 // Using js native prototype here
@@ -37,9 +39,11 @@ const createCachedUser = (
 // ...
 // so we are using modified flyweight for users collection
 export const normalize = (users: User[]): FlyweightState => {
-  const cache: { [k: string]: any } = {};
+  const cache: FlyweightState["cache"] = {};
   return {
+    // removing "permissions" prop and setting proto to single object with according "permissions"
     users: users.map(user => createCachedUser(user, cache)),
-    cache,
+    // cache should be immutable
+    cache: Immutable.Map(cache),
   };
 }
