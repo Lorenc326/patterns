@@ -24,9 +24,9 @@ const Input: React.FC<FieldProps<any> & { label: string, type: string }> =
 
 export const Form: React.FC = () => {
   const [name, email, bio, age] = React.useMemo(() => {
-    const factory = new ValidationsFactory();
     const director = new FormValidations();
-    return fields.map((field => factory.createValidation(field, director)));
+    const factory = new ValidationsFactory(director);
+    return fields.map((field => factory.createValidation(field)));
   }, []);
 
   return (

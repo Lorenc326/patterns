@@ -5,13 +5,11 @@ import { Validator } from './product';
 // Factory class
 // depend on form field we initializing validation class
 export class ValidationsFactory {
-  createValidation(
-    formField: keyof FormValidations,
-    director: FormValidations
-  ): Validator {
-    if (director[formField]) {
+  constructor(private director: FormValidations) {}
+  createValidation(formField: keyof FormValidations): Validator {
+    if (this.director[formField]) {
       const builder = new Boi();
-      director[formField](builder);
+      this.director[formField](builder);
       return builder.getResult();
     }
     // empty validator
