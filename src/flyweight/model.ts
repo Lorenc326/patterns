@@ -11,3 +11,10 @@ export type User = {
   lastName: string;
   permissions: Permissions[];
 }
+
+export type FlyweightState = {
+  cache: {
+    [key: string]: any;
+  };
+  users: User[];
+}

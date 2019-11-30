@@ -1,22 +1,22 @@
 import 'react-virtualized/styles.css'
 import React, { useEffect } from "react";
+import { sizeof } from "sizeof";
 import { List } from "react-virtualized";
 
-import { Permissions, User } from "./model";
+import { FlyweightState } from "./model";
 import { HttpClient } from "./mock"
-
-type State = {
-  cache: {
-    [key: string]: Permissions[];
-  };
-  users: User[];
-}
+import { normalize } from "./normalize"
 
 export const UsersList: React.FC = () => {
-  const [{ users = [] } = {}, setState] = React.useState<State>();
+  const [{ users = [] } = {}, setState] = React.useState<FlyweightState>();
 
   useEffect(() => {
-    HttpClient.getUsers().then(d => setState({ cache: {}, users: d }))
+    HttpClient.getUsers().then(data => {
+      const flyweightData = normalize(data);
+      console.log(`Cached with proto version: ${sizeof(flyweightData, true)} for ${data.length} records`);
+      console.log(`Not cached version: ${sizeof(data, true)}B for ${data.length} records`);
+      setState(flyweightData);
+    });
   }, [setState])
 
   return !!users.length ?  (
