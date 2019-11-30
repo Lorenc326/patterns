@@ -1,5 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Performance log
+![alt text](https://github.com/Lorenc326/patterns/tree/flyweight_prototype/public/log_example.jpg)
+
 ## Available Scripts
 
 In the project directory, you can run:
