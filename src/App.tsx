@@ -1,8 +1,9 @@
 import React from 'react';
+import { Chat } from './ovserver/Chat';
 
 function App() {
   return (
-    <div />
+    <Chat />
   );
 }
 
